@@ -72,6 +72,7 @@ namespace MobileMekanikoSystem.Repository
                 ItemName = item.ItemName,
                 Quantity = item.Quantity,
                 ItemPrice = item.ItemPrice,
+                ItemTotal = item.ItemTotal,
                 InvoiceId = invoice.InvoiceId
             }).ToList();
 

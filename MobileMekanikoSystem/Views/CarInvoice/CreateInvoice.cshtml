@@ -67,6 +67,11 @@
                         <input asp-for="InvoiceItems[@i].ItemPrice" class="form-control" />
                         <span asp-validation-for="InvoiceItems[@i].ItemPrice" class="text-danger"></span>
                     </div>
+                    <div class="form-group ms-4">
+                        <label asp-for="InvoiceItems[@i].ItemTotal" class="control-label"></label>
+                        <input asp-for="InvoiceItems[@i].ItemTotal" class="form-control" readonly />
+                        <span asp-validation-for="InvoiceItems[@i].ItemTotal" class="text-danger"></span>
+                    </div>
                 </div>
             }
         </div>
@@ -105,6 +110,11 @@
         <div class="right-section create-customer-invoice-right-section d-flex justify-content-between">
             <div class="left">
                 <div class="form-group">
+                    <label asp-for="SubTotal" class="control-label"></label>
+                    <input asp-for="SubTotal" class="form-control" readonly />
+                    <span asp-validation-for="SubTotal" class="text-danger"></span>
+                </div>
+                <div class="form-group">
                     <label asp-for="LaborPrice" class="control-label"></label>
                     <input asp-for="LaborPrice" class="form-control" />
                     <span asp-validation-for="LaborPrice" class="text-danger"></span>
@@ -119,28 +129,20 @@
                     <input asp-for="ShippingFee" class="form-control" />
                     <span asp-validation-for="ShippingFee" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="SubTotal" class="control-label"></label>
-                    <input asp-for="SubTotal" class="form-control" />
-                    <span asp-validation-for="SubTotal" class="text-danger"></span>
-                </div>
+
             </div>
             <div class="right">
-                <div class="form-group">
-                    <label asp-for="TaxAmount" class="control-label"></label>
-                    <input asp-for="TaxAmount" class="form-control" />
-                    <span asp-validation-for="TaxAmount" class="text-danger"></span>
-                </div>
-                <div class="form-group">
+                <div class="form-group ms-5">
                     <label asp-for="TotalAmount" class="control-label"></label>
-                    <input asp-for="TotalAmount" class="form-control" />
+                    <input asp-for="TotalAmount" class="form-control" readonly />
                     <span asp-validation-for="TotalAmount" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-group ms-5">
                     <label asp-for="AmountPaid" class="control-label"></label>
                     <input asp-for="AmountPaid" class="form-control" />
                     <span asp-validation-for="AmountPaid" class="text-danger"></span>
                 </div>
+                <button type="button" id="calculateButton" class="btn btn-primary mt-4 ms-5">Calculate</button>
             </div>
         </div>
     </div>
@@ -154,22 +156,54 @@
 
         document.getElementById('addItemButton').addEventListener('click', function () {
             const itemTemplate = `
-                        <div class="invoice-item d-flex mb-3">
-                            <div class="form-group">
-                                <label>Item Name</label>
-                                <input name="InvoiceItems[${itemIndex}].ItemName" class="form-control input" />
-                            </div>
-                            <div class="form-group ms-4">
-                                <label>Quantity</label>
-                                <input name="InvoiceItems[${itemIndex}].Quantity" class="form-control" />
-                            </div>
-                            <div class="form-group ms-4">
-                                <label>Item Price</label>
-                                <input name="InvoiceItems[${itemIndex}].ItemPrice" class="form-control" />
-                            </div>
-                        </div>`;
+                                <div class="invoice-item d-flex mb-3">
+                                    <div class="form-group">
+                                        <label>Item Name</label>
+                                        <input name="InvoiceItems[${itemIndex}].ItemName" class="form-control input" />
+                                    </div>
+                                    <div class="form-group ms-4">
+                                        <label>Quantity</label>
+                                        <input name="InvoiceItems[${itemIndex}].Quantity" class="form-control" />
+                                    </div>
+                                    <div class="form-group ms-4">
+                                        <label>Item Price</label>
+                                        <input name="InvoiceItems[${itemIndex}].ItemPrice" class="form-control" />
+                                    </div>
+                                    <div class="form-group ms-4">
+                                        <label>Item Total</label>
+                                        <input name="InvoiceItems[${itemIndex}].ItemTotal" class="form-control" readonly />
+                                    </div>
+                                </div>`;
             document.getElementById('invoiceItems').insertAdjacentHTML('beforeend', itemTemplate);
             itemIndex++;
+        });
+
+        document.getElementById('calculateButton').addEventListener('click', function () {
+            let subTotal = 0;
+            const itemContainers = document.querySelectorAll('.invoice-item');
+            itemContainers.forEach((container, index) => {
+                const quantityInput = container.querySelector(`input[name="InvoiceItems[${index}].Quantity"]`);
+                const priceInput = container.querySelector(`input[name="InvoiceItems[${index}].ItemPrice"]`);
+                const totalInput = container.querySelector(`input[name="InvoiceItems[${index}].ItemTotal"]`);
+
+                const quantity = parseFloat(quantityInput.value) || 0;
+                const price = parseFloat(priceInput.value) || 0;
+                const itemTotal = quantity * price;
+
+                totalInput.value = itemTotal.toFixed(2);
+                subTotal += itemTotal;
+            });
+
+            const laborPrice = parseFloat(document.querySelector('input[name="LaborPrice"]').value) || 0;
+            const shippingFee = parseFloat(document.querySelector('input[name="ShippingFee"]').value) || 0;
+            const discount = parseFloat(document.querySelector('input[name="Discount"]').value) || 0;
+
+            subTotal += laborPrice + shippingFee;
+
+            document.querySelector('input[name="SubTotal"]').value = subTotal.toFixed(2);
+
+            const totalAmount = subTotal - discount;
+            document.querySelector('input[name="TotalAmount"]').value = totalAmount.toFixed(2);
         });
     </script>
 }
