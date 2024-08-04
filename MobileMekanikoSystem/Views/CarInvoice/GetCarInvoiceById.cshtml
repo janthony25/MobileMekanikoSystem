@@ -1,0 +1,74 @@
+﻿@model List<MobileMekanikoSystem.Models.Dto.CarInvoiceListDto>
+
+<h2>Customer Invoice Details</h2>
+
+<div class="customer-car-details d-flex justify-content-between align-items-center container">
+    <div class="left">
+        <div class="input-group">
+            <label asp-for="@Model[0].CustomerName"></label>
+            <input asp-for="@Model[0].CustomerName" disabled />
+        </div>
+         <div class="input-group">
+            <label asp-for="@Model[0].CustomerEmail"></label>
+            <input asp-for="@Model[0].CustomerEmail" disabled />
+        </div>
+        <div class="input-group">
+            <label asp-for="@Model[0].CustomerNumber"></label>
+            <input asp-for="@Model[0].CustomerNumber" disabled />
+        </div>
+    </div>
+    <div class="right">
+        <input asp-for="@Model[0].CarId" hidden />
+        <div class="input-group">
+            <label asp-for="@Model[0].CarRego"></label>
+            <input asp-for="@Model[0].CarRego" disabled />
+        </div>
+        <div class="input-group">
+            <label asp-for="@Model[0].CarMake"></label>
+            <input asp-for="@Model[0].CarMake" disabled />
+        </div>
+        <div class="input-group">
+            <label asp-for="@Model[0].CarModel"></label>
+            <input asp-for="@Model[0].CarModel" disabled />
+        </div>
+    </div>
+</div>
+
+<div class="container d-flex justify-content-between align-items-end mt-5">
+    <div>
+        <h3>Transactions</h3>
+    </div>
+    <div>
+        <a asp-controller="CarInvoice" asp-action="CreateInvoice" asp-route-id="@Model[0].CarId" class="btn btn-warning"><i class="bi bi-plus-square-fill"></i> Invoice</a>
+    </div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Issue</th>
+            <th>Date Added</th>
+            <th>Due Date</th>
+            <th>Total Amount</th>
+            <th>Amount Paid</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var invoice in Model)
+        {
+            <tr>
+                <td>@invoice.InvoiceId</td>
+                <td>@invoice.IssueName</td>
+                <td>@invoice.DateAdded</td>
+                <td>@invoice.DueDate</td>
+                <td>@invoice.TotalAmount</td>
+                <td>@invoice.AmountPaid</td>
+                <td>
+                    <a><i class="bi bi-pencil-square"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

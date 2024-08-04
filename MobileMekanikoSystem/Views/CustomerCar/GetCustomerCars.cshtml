@@ -1,0 +1,41 @@
+﻿@model List<MobileMekanikoSystem.Models.Dto.CustomerCarDto>
+
+<div class="customer-details">
+    <div class="input-group">
+        <label asp-for="@Model[0].CustomerName"></label>
+        <input asp-for="@Model[0].CustomerName" disabled />
+    </div><div class="input-group">
+        <label asp-for="@Model[0].CustomerEmail"></label>
+        <input asp-for="@Model[0].CustomerEmail" disabled />
+    </div>
+    <div class="input-group">
+        <label asp-for="@Model[0].CustomerNumber"></label>
+        <input asp-for="@Model[0].CustomerNumber" disabled />
+    </div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Car Rego</th>
+            <th>Car Make</th>
+            <th>Car Model</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var car in Model)
+        {
+            <tr>
+                <td>@car.CarId</td>
+                <td>@car.CarRego</td>
+                <td>@car.CarMake</td>
+                <td>@car.CarModel</td>
+                <td>
+                    <a class="btn btn-warning" asp-controller="CarInvoice" asp-action="GetCarInvoiceById" asp-route-id="@car.CarId"><i class="bi bi-pencil-square"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
